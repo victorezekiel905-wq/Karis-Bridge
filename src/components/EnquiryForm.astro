@@ -1,0 +1,168 @@
+---
+/**
+ * Enquiry form without a server: it composes a tidy message and hands it to
+ * WhatsApp or the parent's email app, both addressed to the school.
+ */
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+interface Props {
+  subject?: string;
+}
+
+const { subject = 'Admission enquiry' } = Astro.props;
+---
+
+<form class="form" data-enquiry data-whatsapp={site.whatsapp} data-email={site.email} data-subject={subject} novalidate>
+  <div class="form__row">
+    <div class="field">
+      <label for="ef-parent">Parent / guardian name <span class="req" aria-hidden="true">*</span></label>
+      <input id="ef-parent" name="parent" autocomplete="name" required />
+    </div>
+    <div class="field">
+      <label for="ef-phone">Phone or WhatsApp <span class="req" aria-hidden="true">*</span></label>
+      <input id="ef-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required />
+    </div>
+  </div>
+  <div class="form__row">
+    <div class="field">
+      <label for="ef-email">Email address</label>
+      <input id="ef-email" name="email" type="email" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="ef-programme">Programme of interest <span class="req" aria-hidden="true">*</span></label>
+      <select id="ef-programme" name="programme" required>
+        <option value="">Choose a programme</option>
+        <option>Creche</option>
+        <option>Nursery</option>
+        <option>Primary</option>
+        <option>Summer School</option>
+        <option>Not sure yet</option>
+      </select>
+    </div>
+  </div>
+  <div class="form__row">
+    <div class="field">
+      <label for="ef-child">Child’s name</label>
+      <input id="ef-child" name="child" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label for="ef-age">Child’s age</label>
+      <input id="ef-age" name="age" placeholder="e.g. 3 years" autocomplete="off" />
+    </div>
+  </div>
+  <div class="field">
+    <label for="ef-visit">Preferred visit date</label>
+    <input id="ef-visit" name="visit" type="date" />
+  </div>
+  <div class="field">
+    <label for="ef-message">Anything you would like us to know?</label>
+    <textarea id="ef-message" name="message" rows="4"></textarea>
+  </div>
+  <div class="btn-row">
+    <button type="submit" value="whatsapp" class="btn btn--primary">
+      Send on WhatsApp
+      <span class="btn__icon btn__icon--slide"><Icon name="whatsapp" size={18} /></span>
+    </button>
+    <button type="submit" value="email" class="btn btn--ghost">
+      Send by email
+      <span class="btn__icon btn__icon--slide"><Icon name="mail" size={18} /></span>
+    </button>
+  </div>
+  <p class="form__status" role="status" aria-live="polite" data-status>
+    <Icon name="check" size={18} />
+    <span data-status-text></span>
+  </p>
+  <p class="t-small t-muted">Fields marked <span style="color: var(--red)">*</span> are required. Your details are used only to respond to your enquiry.</p>
+</form>
+
+<script>
+  const forms = document.querySelectorAll<HTMLFormElement>('[data-enquiry]');
+
+  forms.forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-status]');
+    const statusText = form.querySelector<HTMLElement>('[data-status-text]');
+
+    const setError = (field: HTMLInputElement | HTMLSelectElement, message: string | null) => {
+      const wrapper = field.closest('.field');
+      if (!wrapper) return;
+      wrapper.querySelector('.field__error')?.remove();
+      wrapper.classList.toggle('has-error', Boolean(message));
+      field.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (message) {
+        const error = document.createElement('span');
+        error.className = 'field__error';
+        error.id = `${field.id}-error`;
+        error.textContent = message;
+        wrapper.append(error);
+        field.setAttribute('aria-describedby', error.id);
+      } else {
+        field.removeAttribute('aria-describedby');
+      }
+    };
+
+    const validate = () => {
+      let firstInvalid: HTMLInputElement | HTMLSelectElement | null = null;
+      const check = (name: string, test: (v: string) => string | null) => {
+        const field = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
+        if (!field) return;
+        const message = test(field.value.trim());
+        setError(field, message);
+        if (message && !firstInvalid) firstInvalid = field;
+      };
+      check('parent', (v) => (v.length < 2 ? 'Please tell us your name.' : null));
+      check('phone', (v) => (v.replace(/\D/g, '').length < 7 ? 'Please enter a phone number we can reach you on.' : null));
+      check('email', (v) => (v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'That email address doesn’t look quite right.' : null));
+      check('programme', (v) => (!v ? 'Please choose a programme.' : null));
+      return firstInvalid as HTMLInputElement | HTMLSelectElement | null;
+    };
+
+    form.addEventListener('input', (event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.closest('.field')?.classList.contains('has-error')) validate();
+    });
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const invalid = validate();
+      if (invalid) {
+        invalid.focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      const value = (key: string) => String(data.get(key) ?? '').trim();
+      const visit = value('visit')
+        ? new Date(`${value('visit')}T00:00:00`).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+        : '';
+
+      const details = [
+        `Parent/guardian: ${value('parent')}`,
+        `Phone: ${value('phone')}`,
+        value('email') ? `Email: ${value('email')}` : null,
+        `Programme: ${value('programme')}`,
+        value('child') ? `Child's name: ${value('child')}` : null,
+        value('age') ? `Child's age: ${value('age')}` : null,
+        visit ? `Preferred visit date: ${visit}` : null,
+      ].filter((line): line is string => line !== null);
+      const text = [
+        'Hello Karisbridge Schools, I would like to make an enquiry.',
+        details.join('\n'),
+        value('message') ? `Message: ${value('message')}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n');
+
+      const via = (event.submitter as HTMLButtonElement | null)?.value ?? 'whatsapp';
+      if (via === 'email') {
+        const subject = `${form.dataset.subject} — ${value('programme')}`;
+        window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+        if (statusText) statusText.textContent = 'Your email app should now be open with your enquiry ready to send. Thank you!';
+      } else {
+        window.open(`https://wa.me/${form.dataset.whatsapp}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+        if (statusText) statusText.textContent = 'WhatsApp has opened with your enquiry ready to send. Thank you — we look forward to meeting you!';
+      }
+      status?.classList.add('is-visible');
+    });
+  });
+</script>

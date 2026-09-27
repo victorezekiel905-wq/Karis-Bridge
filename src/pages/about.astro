@@ -1,0 +1,658 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import type { IconName } from '../components/Icon.astro';
+import Arc from '../components/Arc.astro';
+import Email from '../components/Email.astro';
+import { media } from '../data/media';
+import type { Media } from '../data/media';
+import { site } from '../data/site';
+
+const values: { icon: IconName; title: string; text: string }[] = [
+  { icon: 'heart', title: 'Grace', text: 'We lead with kindness and patience, and give every child room to grow at their own pace.' },
+  { icon: 'award', title: 'Excellence', text: 'We hold high expectations — and help every child reach them, one confident step at a time.' },
+  { icon: 'compass', title: 'Curiosity', text: 'We ask questions, test ideas and celebrate the joy of finding things out for ourselves.' },
+  { icon: 'users', title: 'Kindness', text: 'We don’t bully. We love. We look out for one another in the classroom and beyond it.' },
+  { icon: 'star', title: 'Confidence', text: 'From class presentations to the graduation stage, children learn their voice matters.' },
+  { icon: 'globe', title: 'Global mindset', text: 'We honour our Nigerian roots while opening children’s eyes to a big, beautiful world.' },
+];
+
+const approach: { word: string; title: string; text: string; image: Media }[] = [
+  {
+    word: 'Head',
+    title: 'Minds that think',
+    text: 'Strong foundations in literacy, numeracy and science, taught with clarity and checked with care — so children understand, not just remember.',
+    image: media.handsUp,
+  },
+  {
+    word: 'Heart',
+    title: 'Hearts that care',
+    text: 'Character is part of the timetable. Good manners, empathy, honesty and courage are modelled by our teachers and celebrated in our children.',
+    image: media.welcomeBack,
+  },
+  {
+    word: 'Hands',
+    title: 'Hands that make',
+    text: 'Cooking, coding, crafting, experimenting and performing: practical, joyful work that turns lessons into lasting skills.',
+    image: media.youngChef,
+  },
+];
+
+const partnership: { icon: IconName; title: string; text: string }[] = [
+  { icon: 'users', title: 'An open door', text: 'You are always welcome to talk to us. Great education is something we build together.' },
+  { icon: 'book', title: 'Clear progress', text: 'We keep you informed about your child’s learning, wellbeing and next steps.' },
+  { icon: 'award', title: 'Shared celebrations', text: 'Graduations, award ceremonies and special days that families enjoy with us.' },
+];
+---
+
+<Base
+  title="About Us"
+  description="Discover the story, vision and values of Karisbridge Schools — a Creche, Nursery and Primary school in Ibeju-Lekki, Lagos, offering holistic education and excellent character."
+  image={media.campusCourtyard.src}
+>
+  <PageHero
+    crumb="About"
+    eyebrow="Our story"
+    lead="Karisbridge Schools exists for one purpose: to give children a joyful, holistic start — where they are deeply loved, wisely taught and warmly expected to be their best."
+    image={media.campusCourtyard}
+    position="38% 50%"
+  >
+    <Fragment slot="title">A bridge of <em>grace</em> for every child<span class="full-stop">.</span></Fragment>
+  </PageHero>
+
+  <!-- ============ Name ============ -->
+  <section class="section section--cream name">
+    <div class="container">
+      <div class="section-head section-head--center">
+        <p class="eyebrow" data-reveal>In a name</p>
+        <h2 class="t-h2" data-split>Two words, <em>one promise</em><span class="full-stop">.</span></h2>
+      </div>
+      <div class="name__grid">
+        <article class="name__card" data-reveal>
+          <p class="name__word">Karis</p>
+          <p class="name__gloss">From the Greek <span lang="el">χάρις</span> · <em>grace</em></p>
+          <p class="t-muted">
+            Grace is kindness given freely. It is the patience of a teacher who kneels to a child’s eye level, and the
+            warmth that makes a new classroom feel like home.
+          </p>
+        </article>
+        <span class="name__plus" aria-hidden="true" data-reveal="scale" style="--d:1"><Icon name="plus" size={26} /></span>
+        <article class="name__card" data-reveal style="--d:2">
+          <p class="name__word">Bridge</p>
+          <p class="name__gloss">A way across · <em>somewhere new</em></p>
+          <p class="t-muted">
+            A bridge carries you forward: from home to school, from curiosity to confidence, from Lagos to the wider
+            world. It is built to be strong — so children can cross it boldly.
+          </p>
+        </article>
+      </div>
+      <p class="name__result" data-reveal>
+        <Icon name="spark" size={18} class="spark" />
+        Together: <strong>grace that carries children confidently into their future.</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Vision & mission ============ -->
+  <section class="section section--night on-dark grain vm">
+    <Arc class="vm__arc" spans={5} />
+    <div class="container vm__grid">
+      <div class="vm__item" data-reveal>
+        <p class="eyebrow">Our vision</p>
+        <p class="vm__text">{site.vision}</p>
+      </div>
+      <div class="vm__item" data-reveal style="--d:2">
+        <p class="eyebrow">Our mission</p>
+        <p class="vm__text vm__text--sm">{site.mission}</p>
+      </div>
+      <div class="vm__tagline" data-reveal style="--d:3">
+        <Icon name="spark" size={16} class="spark" />
+        {site.tagline}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Values ============ -->
+  <section class="section values">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal>Our values</p>
+          <h2 class="t-h2" data-split>What we believe, <em>and how it shows</em><span class="full-stop">.</span></h2>
+        </div>
+        <p class="t-lead t-muted" data-reveal style="--d:2">
+          Six values guide how we teach, how we speak to one another and how we measure success. You will see them in
+          the smallest moments of the day.
+        </p>
+      </div>
+      <ul class="values__grid">
+        {
+          values.map((v, i) => (
+            <li class="value" data-reveal style={`--d:${i % 3}`}>
+              <span class="value__icon">
+                <Icon name={v.icon} size={22} />
+              </span>
+              <h3 class="t-h3">{v.title}</h3>
+              <p class="t-muted">{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ Approach ============ -->
+  <section class="section section--cream approach">
+    <div class="container approach__grid">
+      <div class="approach__intro">
+        <p class="eyebrow" data-reveal>Our approach</p>
+        <h2 class="t-h2" data-split>Head, heart <em>and hands</em><span class="full-stop">.</span></h2>
+        <p class="t-lead t-muted" data-reveal style="--d:2">
+          Holistic education means educating the whole child. Every lesson, routine and celebration at Karisbridge is
+          designed to grow all three — together.
+        </p>
+      </div>
+      <ol class="approach__list">
+        {
+          approach.map((a, i) => (
+            <li class="approach__item" data-reveal style={`--d:${i}`}>
+              <div class="frame circle approach__img">
+                <Photo src={a.image.src} alt={a.image.alt} sizes="120px" />
+              </div>
+              <div class="approach__body">
+                <p class="approach__word">{a.word}</p>
+                <h3 class="t-h4">{a.title}</h3>
+                <p class="t-muted">{a.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ Quote ============ -->
+  <section class="section quote">
+    <div class="container quote__inner">
+      <Icon name="spark" size={30} class="spark twinkle quote__spark" />
+      <p class="eyebrow" data-reveal>Written on our wall</p>
+      <blockquote class="quote__text" data-split>
+        “We don’t bully.<br /> <em>We love</em>.”
+      </blockquote>
+      <p class="t-lead t-muted quote__note" data-reveal style="--d:3">
+        It is one of the first things visitors notice — and the rule our children are proudest to keep.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ Partnership ============ -->
+  <section class="section section--cream partnership">
+    <div class="container partnership__grid">
+      <div class="partnership__media">
+        <div class="frame arch-3x4" data-reveal="clip">
+          <Photo src={media.gradShapesTeacher.src} alt={media.gradShapesTeacher.alt} sizes="(max-width: 900px) 80vw, 420px" position="48% 50%" />
+        </div>
+      </div>
+      <div class="partnership__copy">
+        <p class="eyebrow" data-reveal>Families & teachers</p>
+        <h2 class="t-h2" data-split>Parents are our <em>partners</em><span class="full-stop">.</span></h2>
+        <p class="t-lead t-muted" data-reveal style="--d:2">
+          Our teachers know each child by name, notice the small wins and share them with you. When home and school pull
+          in the same direction, children fly.
+        </p>
+        <ul class="partnership__list">
+          {
+            partnership.map((p, i) => (
+              <li data-reveal style={`--d:${i + 2}`}>
+                <span class="icon-tile">
+                  <Icon name={p.icon} size={22} />
+                </span>
+                <div>
+                  <h3 class="t-h4">{p.title}</h3>
+                  <p class="t-muted t-small">{p.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Careers ============ -->
+  <section class="section careers" id="careers">
+    <div class="container">
+      <div class="careers__card grain on-dark" data-reveal>
+        <div class="careers__glow" aria-hidden="true"></div>
+        <div class="careers__copy">
+          <p class="eyebrow">Careers</p>
+          <h2 class="t-h2">Join the Karisbridge <em>family</em><span class="full-stop">.</span></h2>
+          <p class="t-lead">
+            We are always glad to hear from warm, gifted people — daycare caregivers, early years and primary teachers,
+            and professionals who share our love for children.
+          </p>
+        </div>
+        <div class="careers__action">
+          <a href={`mailto:${site.careersEmail}?subject=${encodeURIComponent('Application — Karisbridge Schools')}`} class="btn btn--light">
+            Send us your CV
+            <span class="btn__icon"><Icon name="arrow-up-right" size={18} /></span>
+          </a>
+          <p class="t-small"><Email address={site.careersEmail} /></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---------- Name ---------- */
+  .name__grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: clamp(20px, 3vw, 40px);
+    align-items: center;
+  }
+
+  .name__card {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    height: 100%;
+    padding: clamp(32px, 4vw, 56px);
+    border-radius: var(--radius-xl);
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .name__word {
+    font-family: var(--font-display);
+    font-size: clamp(3.4rem, 2rem + 4.4vw, 6.4rem);
+    font-weight: 330;
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+  }
+
+  .name__card:last-child .name__word {
+    color: var(--sky-ink);
+    font-style: italic;
+  }
+
+  .name__gloss {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .name__gloss [lang='el'] {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ink);
+  }
+
+  .name__gloss em {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--indigo);
+  }
+
+  .name__plus {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--red);
+    color: var(--white);
+    box-shadow: 0 16px 30px -14px rgba(232, 33, 42, 0.8);
+  }
+
+  .name__result {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: clamp(40px, 5vw, 64px);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+    color: var(--text);
+    text-align: center;
+  }
+
+  .name__result strong {
+    font-weight: 450;
+    color: var(--ink);
+  }
+
+  @media (max-width: 860px) {
+    .name__grid {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+    .name__card {
+      width: 100%;
+    }
+  }
+
+  /* ---------- Vision & mission ---------- */
+  .vm {
+    overflow: hidden;
+  }
+
+  .vm__arc {
+    position: absolute;
+    right: -20%;
+    bottom: -30%;
+    width: min(1100px, 110vw);
+    color: rgba(255, 255, 255, 0.07);
+  }
+
+  .vm__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(40px, 6vw, 110px);
+    align-items: start;
+  }
+
+  .vm__item {
+    display: grid;
+    gap: 1.6rem;
+  }
+
+  .vm__text {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 1.3rem + 3vw, 4rem);
+    font-weight: 330;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--white);
+  }
+
+  .vm__text--sm {
+    font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .vm__tagline {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    justify-self: start;
+    margin-top: clamp(16px, 3vw, 40px);
+    padding: 0.8rem 1.3rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  @media (max-width: 860px) {
+    .vm__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Values ---------- */
+  .values__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line-strong);
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .value {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: clamp(28px, 3.4vw, 48px);
+    border-right: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line-strong);
+    transition: background-color 0.5s var(--ease);
+  }
+
+  .value:hover {
+    background: var(--white);
+  }
+
+  .value__icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 0.8rem;
+    border-radius: 50%;
+    background: var(--sky-soft);
+    color: var(--indigo);
+    transition: transform 0.6s var(--ease-spring), background-color 0.4s var(--ease), color 0.4s var(--ease);
+  }
+
+  .value:hover .value__icon {
+    transform: rotate(-12deg) scale(1.06);
+    background: var(--indigo);
+    color: var(--white);
+  }
+
+  @media (max-width: 960px) {
+    .values__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .values__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ---------- Approach ---------- */
+  .approach__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(48px, 7vw, 120px);
+    align-items: start;
+  }
+
+  .approach__intro {
+    position: sticky;
+    top: calc(var(--header-h) + 40px);
+    display: grid;
+    gap: 1.6rem;
+  }
+
+  .approach__list {
+    display: grid;
+  }
+
+  .approach__item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: clamp(24px, 3vw, 44px);
+    align-items: start;
+    padding: clamp(28px, 3vw, 40px) 0;
+    border-top: 1px solid var(--line-strong);
+  }
+
+  .approach__item:last-child {
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .approach__img {
+    width: 120px;
+    box-shadow:
+      0 0 0 6px var(--cream),
+      0 0 0 7px var(--line-strong);
+  }
+
+  .approach__body {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .approach__word {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 1.8rem + 2.6vw, 4.2rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--sky-ink);
+  }
+
+  @media (max-width: 900px) {
+    .approach__grid {
+      grid-template-columns: 1fr;
+    }
+    .approach__intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .approach__item {
+      grid-template-columns: 1fr;
+    }
+    .approach__img {
+      width: 96px;
+    }
+  }
+
+  /* ---------- Quote ---------- */
+  .quote__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1.6rem;
+    text-align: center;
+  }
+
+  .quote__text {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 1rem + 7vw, 7.4rem);
+    font-weight: 320;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    max-width: 13ch;
+  }
+
+  .quote__text :global(em) {
+    color: var(--red);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .quote__note {
+    max-width: 36rem;
+  }
+
+  .quote__spark {
+    position: absolute;
+    top: 0;
+    right: 12%;
+  }
+
+  /* ---------- Partnership ---------- */
+  .partnership__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(48px, 7vw, 120px);
+    align-items: center;
+  }
+
+  .partnership__media .frame {
+    width: min(100%, 420px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .partnership__copy {
+    display: grid;
+    gap: 1.6rem;
+  }
+
+  .partnership__list {
+    display: grid;
+    gap: 1.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .partnership__list li {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 1.1rem;
+    align-items: center;
+  }
+
+  .partnership__list h3 {
+    margin-bottom: 0.15rem;
+  }
+
+  @media (max-width: 900px) {
+    .partnership__grid {
+      grid-template-columns: 1fr;
+    }
+    .partnership__media .frame {
+      margin-inline: auto;
+    }
+  }
+
+  /* ---------- Careers ---------- */
+  .careers {
+    padding-bottom: calc(var(--section) * 0.8);
+  }
+
+  .careers__card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: end;
+    padding: clamp(40px, 6vw, 88px);
+    border-radius: var(--radius-xl);
+    background: var(--indigo);
+    overflow: hidden;
+  }
+
+  .careers__glow {
+    position: absolute;
+    z-index: -1;
+    top: -260px;
+    right: -120px;
+    width: 600px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(14, 165, 236, 0.55), transparent);
+  }
+
+  .careers__copy {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .careers__action {
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .careers__card {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

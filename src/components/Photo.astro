@@ -1,0 +1,48 @@
+---
+/**
+ * Responsive, art-directed photo. Generates AVIF + WebP (JPEG fallback) at
+ * sensible widths, never upscaling beyond the original file.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  sizes?: string;
+  widths?: number[];
+  class?: string;
+  priority?: boolean;
+  position?: string;
+  [key: string]: unknown;
+}
+
+const {
+  src,
+  alt,
+  sizes = '100vw',
+  widths = [320, 480, 640, 800, 1024, 1280, 1600],
+  class: className,
+  priority = false,
+  position,
+  ...rest
+} = Astro.props;
+
+const candidates = [...new Set([...widths.filter((w) => w < src.width), src.width])].sort((a, b) => a - b);
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  widths={candidates}
+  sizes={sizes}
+  formats={['webp']}
+  fallbackFormat="jpg"
+  quality={78}
+  loading={priority ? 'eager' : 'lazy'}
+  decoding={priority ? 'sync' : 'async'}
+  fetchpriority={priority ? 'high' : undefined}
+  class={className}
+  style={position ? `object-position: ${position}` : undefined}
+  {...rest}
+/>

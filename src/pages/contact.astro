@@ -1,0 +1,286 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import Email from '../components/Email.astro';
+import { media } from '../data/media';
+import { site, mapsLink, mapsEmbed, whatsappLink } from '../data/site';
+---
+
+<Base
+  title="Contact Us"
+  description="Contact Karisbridge Schools at 1st Avenue, Kajola Estate Phase 1, Ibeju-Lekki, Lagos. Call, WhatsApp, email or book a school visit."
+  image={media.campusFront.src}
+>
+  <PageHero
+    crumb="Contact"
+    eyebrow="Contact us"
+    lead="Whether you are ready to book a visit or simply have a question, our team would love to hear from you."
+    image={media.campusFront}
+    position="58% 50%"
+  >
+    <Fragment slot="title">We would love to <em>meet</em> you<span class="full-stop">.</span></Fragment>
+  </PageHero>
+
+  <!-- ============ Contact cards ============ -->
+  <section class="section section--tight contact-cards">
+    <div class="container">
+      <ul class="cards">
+        <li class="ccard" data-reveal>
+          <span class="icon-tile"><Icon name="pin" size={24} /></span>
+          <h2 class="t-h4">Visit us</h2>
+          <address>
+            {site.address.street}<br />
+            {site.address.road}<br />
+            {site.address.area}, {site.address.city}
+          </address>
+          <a class="link-arrow" href={mapsLink} target="_blank" rel="noopener">Get directions <Icon name="arrow-up-right" size={16} /></a>
+        </li>
+        <li class="ccard" data-reveal style="--d:1">
+          <span class="icon-tile icon-tile--sun"><Icon name="phone" size={24} /></span>
+          <h2 class="t-h4">Call us</h2>
+          <p>
+            {site.phones.map((p) => <a class="ccard__line" href={`tel:${p.tel}`}>{p.display}</a>)}
+          </p>
+          <span class="t-small t-muted">Monday – Friday</span>
+        </li>
+        <li class="ccard" data-reveal style="--d:2">
+          <span class="icon-tile icon-tile--red"><Icon name="mail" size={24} /></span>
+          <h2 class="t-h4">Email us</h2>
+          <p>
+            <a class="ccard__line" href={`mailto:${site.email}`}><Email address={site.email} /></a>
+          </p>
+          <span class="t-small t-muted">
+            Careers: <a class="text-link" href={`mailto:${site.careersEmail}`}><Email address={site.careersEmail} /></a>
+          </span>
+        </li>
+        <li class="ccard ccard--dark on-dark" data-reveal style="--d:3">
+          <span class="icon-tile icon-tile--ink"><Icon name="whatsapp" size={24} /></span>
+          <h2 class="t-h4">WhatsApp</h2>
+          <p>The quickest way to reach our team for enquiries and visits.</p>
+          <a class="link-arrow" href={whatsappLink()} target="_blank" rel="noopener">Start a chat <Icon name="arrow-up-right" size={16} /></a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ Map + form ============ -->
+  <section class="section section--cream locate">
+    <div class="container locate__grid">
+      <div class="locate__map-col">
+        <div class="stack" data-reveal>
+          <p class="eyebrow">Find us</p>
+          <h2 class="t-h2">Look for the <em>shark</em><span class="full-stop">.</span></h2>
+          <p class="t-lead t-muted">
+            We are inside Kajola Estate Phase 1, off the Lekki–Epe Expressway in Ibeju-Lekki. Head for 1st Avenue — our
+            ocean-themed entrance is hard to miss.
+          </p>
+        </div>
+        <div class="locate__map frame" data-reveal style="--d:2">
+          <div class="locate__placeholder" aria-hidden="true">
+            <span class="locate__pin"><Icon name="pin" size={26} /></span>
+            <span>Kajola Estate Phase 1 · Ibeju-Lekki</span>
+          </div>
+          <iframe
+            src={mapsEmbed}
+            title="Map showing the location of Karisbridge Schools, Kajola Estate, Ibeju-Lekki"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </div>
+        <a class="btn btn--primary locate__dir" href={mapsLink} target="_blank" rel="noopener" data-reveal style="--d:3">
+          Open in Google Maps
+          <span class="btn__icon"><Icon name="arrow-up-right" size={18} /></span>
+        </a>
+      </div>
+      <div class="locate__form" data-reveal style="--d:1">
+        <h2 class="t-h3">Send us a message</h2>
+        <p class="t-muted t-small locate__sub">We will get back to you as soon as possible.</p>
+        <EnquiryForm subject="Enquiry from the website" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Social ============ -->
+  <section class="section section--tight follow">
+    <div class="container follow__inner" data-reveal>
+      <p class="eyebrow">Stay close</p>
+      <h2 class="t-h3">Follow our days on social media</h2>
+      <div class="btn-row follow__row">
+        <a href={site.social.instagram} target="_blank" rel="noopener" class="btn btn--ghost">
+          Instagram
+          <span class="btn__icon"><Icon name="instagram" size={18} /></span>
+        </a>
+        <a href={site.social.facebook} target="_blank" rel="noopener" class="btn btn--ghost">
+          Facebook
+          <span class="btn__icon"><Icon name="facebook" size={18} /></span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact-cards {
+    padding-top: 0;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(14px, 1.6vw, 22px);
+  }
+
+  .ccard {
+    display: grid;
+    gap: 0.9rem;
+    align-content: start;
+    padding: clamp(26px, 2.8vw, 36px);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
+  }
+
+  .ccard:hover {
+    transform: translateY(-4px);
+    box-shadow: inset 0 0 0 1px var(--line), var(--shadow);
+  }
+
+  .ccard .icon-tile {
+    margin-bottom: 0.6rem;
+  }
+
+  .ccard address {
+    font-style: normal;
+    color: var(--text);
+  }
+
+  .ccard__line {
+    display: block;
+    font-weight: 650;
+    color: var(--ink);
+    transition: color 0.3s var(--ease);
+  }
+
+  .ccard__line:hover {
+    color: var(--sky-ink);
+  }
+
+  .ccard .link-arrow {
+    justify-self: start;
+    margin-top: 0.3rem;
+  }
+
+  .ccard--dark {
+    background: var(--night);
+    box-shadow: none;
+  }
+
+  .ccard--dark .icon-tile {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  @media (max-width: 1080px) {
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .locate__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(40px, 5vw, 80px);
+    align-items: start;
+  }
+
+  .locate__map-col {
+    display: grid;
+    gap: 1.8rem;
+    justify-items: start;
+  }
+
+  .locate__map {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+  }
+
+  .locate__placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.9rem;
+    background:
+      radial-gradient(circle at 50% 45%, rgba(14, 165, 236, 0.14), transparent 60%),
+      repeating-linear-gradient(0deg, transparent 0 39px, var(--line) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, var(--line) 39px 40px),
+      var(--sand);
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: var(--ink);
+  }
+
+  .locate__pin {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50% 50% 50% 0;
+    background: var(--red);
+    color: var(--white);
+    rotate: -45deg;
+    box-shadow: 0 16px 30px -12px rgba(232, 33, 42, 0.7);
+  }
+
+  .locate__pin :global(svg) {
+    rotate: 45deg;
+  }
+
+  .locate__map iframe {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    filter: saturate(0.9) contrast(1.02);
+  }
+
+  .locate__form {
+    padding: clamp(28px, 4vw, 52px);
+    border-radius: var(--radius-xl);
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line), var(--shadow-lg);
+  }
+
+  .locate__sub {
+    margin: 0.4rem 0 1.8rem;
+  }
+
+  @media (max-width: 960px) {
+    .locate__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .follow__inner {
+    display: grid;
+    justify-items: center;
+    gap: 1.2rem;
+    text-align: center;
+  }
+
+  .follow__row {
+    justify-content: center;
+    margin-top: 0.4rem;
+  }
+</style>

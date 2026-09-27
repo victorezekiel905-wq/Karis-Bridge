@@ -1,0 +1,651 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { media, galleryOrder, categories } from '../data/media';
+import type { Media } from '../data/media';
+import { site } from '../data/site';
+
+const LARGE_MIN = 1000;
+
+const gallery = await Promise.all(
+  galleryOrder.map(async (key) => {
+    const item = media[key];
+    const large = item.src.width >= LARGE_MIN;
+    const full = await getImage({ src: item.src, width: Math.min(item.src.width, 1800), format: 'webp', quality: 80 });
+    return { key, ...item, large, full: full.src };
+  }),
+);
+
+const highlights: { title: string; text: string; image: Media; tag: string }[] = [
+  {
+    tag: 'Celebration',
+    title: 'KBS Summer School',
+    text: 'Our 2024 Summer School kept curiosity switched on all through the long vacation.',
+    image: media.summerSchool2024,
+  },
+  {
+    tag: 'New session',
+    title: 'Welcome back to school',
+    text: 'Stars, signs and big smiles as our children returned — ready to show forth their light.',
+    image: media.welcomeBack,
+  },
+  {
+    tag: 'Wellbeing',
+    title: 'A visit about healthy smiles',
+    text: 'A dental health session that taught our pupils how to care for their teeth.',
+    image: media.dentalHealthTalk,
+  },
+];
+---
+
+<Base
+  title="Life at KBS"
+  description="Celebrations, classrooms and everyday moments at Karisbridge Schools — graduation, summer school, coding, cooking, science and play in Ibeju-Lekki, Lagos."
+  image={media.gradWorldLine.src}
+>
+  <PageHero
+    crumb="Life at KBS"
+    eyebrow="Life at Karisbridge"
+    lead="Graduations and award days, first days and summer days — and all the ordinary, wonderful moments in between."
+    image={media.gradWorldLine}
+    position="30% 50%"
+  >
+    <Fragment slot="title">Big days, <em>little</em> moments<span class="full-stop">.</span></Fragment>
+  </PageHero>
+
+  <!-- ============ Highlights ============ -->
+  <section class="section section--cream highlights">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <div>
+          <p class="eyebrow" data-reveal>Highlights</p>
+          <h2 class="t-h2" data-split>Days our children <em>talk about</em><span class="full-stop">.</span></h2>
+        </div>
+        <p class="t-lead t-muted" data-reveal style="--d:2">
+          Celebrations are part of how we learn. They build confidence, bring families together and give every child a
+          moment in the light.
+        </p>
+      </div>
+
+      <div class="highlights__grid">
+        <article class="feature" data-reveal>
+          <div class="frame feature__img">
+            <Photo src={media.gradContinentsStage.src} alt={media.gradContinentsStage.alt} sizes="(max-width: 960px) 92vw, 680px" position="60% 45%" />
+          </div>
+          <div class="feature__body on-dark">
+            <p class="feature__tag"><Icon name="award" size={16} /> Graduation &amp; Award Ceremony</p>
+            <h3 class="t-h2">Around the world, <em>on one stage</em></h3>
+            <p>
+              At our 2nd Graduation &amp; Award Ceremony, pupils represented every continent in song and costume, our
+              nursery class became the roots, leaves and flowers of a plant, and our toddlers proudly held up their
+              shapes.
+            </p>
+          </div>
+        </article>
+
+        <ul class="highlights__list">
+          {
+            highlights.map((h, i) => (
+              <li class="highlight" data-reveal style={`--d:${i + 1}`}>
+                <div class="frame highlight__img">
+                  <Photo src={h.image.src} alt={h.image.alt} sizes="120px" />
+                </div>
+                <div>
+                  <p class="highlight__tag">{h.tag}</p>
+                  <h3 class="t-h4">{h.title}</h3>
+                  <p class="t-muted t-small">{h.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Gallery ============ -->
+  <section class="section gallery" id="gallery">
+    <div class="container">
+      <div class="gallery__head">
+        <div class="stack">
+          <p class="eyebrow" data-reveal>Gallery</p>
+          <h2 class="t-h2" data-split>Through our <em>lens</em><span class="full-stop">.</span></h2>
+        </div>
+        <div class="filters" role="group" aria-label="Filter photos" data-reveal style="--d:2">
+          {
+            categories.map((c, i) => (
+              <button type="button" class="filter" data-filter={c.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+                {c.label}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <ul class="gallery__grid" data-gallery>
+        {
+          gallery.map((g, i) => (
+            <li class:list={['gallery__item', { 'gallery__item--large': g.large }]} data-category={g.category}>
+              <button
+                type="button"
+                class="gallery__btn frame"
+                data-full={g.full}
+                data-caption={g.caption}
+                data-alt={g.alt}
+                data-small={g.large ? undefined : 'true'}
+                aria-label={`Open photo: ${g.caption}`}
+              >
+                <Photo src={g.src} alt={g.alt} sizes={g.large ? '(max-width: 700px) 92vw, 420px' : '(max-width: 700px) 46vw, 206px'} />
+                <span class="gallery__cap">
+                  <span>{g.caption}</span>
+                  <Icon name="expand" size={16} />
+                </span>
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="gallery__more" data-reveal>
+        <p class="t-muted">New moments are shared every week.</p>
+        <a href={site.social.instagram} target="_blank" rel="noopener" class="btn btn--ghost">
+          Follow {site.social.instagramHandle}
+          <span class="btn__icon"><Icon name="instagram" size={18} /></span>
+        </a>
+        <a href={site.social.facebook} target="_blank" rel="noopener" class="btn btn--ghost">
+          Facebook
+          <span class="btn__icon"><Icon name="facebook" size={18} /></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <dialog class="lightbox" data-lightbox aria-label="Photo viewer">
+    <div class="lightbox__inner">
+      <button type="button" class="lightbox__close" data-lb-close aria-label="Close photo viewer">
+        <Icon name="close" size={22} />
+      </button>
+      <button type="button" class="lightbox__nav lightbox__nav--prev" data-lb-prev aria-label="Previous photo">
+        <Icon name="arrow-left" size={22} />
+      </button>
+      <figure class="lightbox__figure">
+        <img data-lb-img alt="" />
+        <figcaption>
+          <span data-lb-caption></span>
+          <span class="lightbox__count" data-lb-count></span>
+        </figcaption>
+      </figure>
+      <button type="button" class="lightbox__nav lightbox__nav--next" data-lb-next aria-label="Next photo">
+        <Icon name="arrow-right" size={22} />
+      </button>
+    </div>
+  </dialog>
+</Base>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-gallery]');
+  const items = Array.from(document.querySelectorAll<HTMLLIElement>('.gallery__item'));
+  const filters = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+
+  /* ---------- Filtering ---------- */
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.filter;
+      filters.forEach((f) => f.setAttribute('aria-pressed', String(f === btn)));
+      grid?.classList.add('is-filtering');
+      window.setTimeout(() => {
+        items.forEach((item) => {
+          item.hidden = !(id === 'all' || item.dataset.category === id);
+        });
+        grid?.classList.remove('is-filtering');
+      }, 220);
+    });
+  });
+
+  /* ---------- Lightbox ---------- */
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const img = document.querySelector<HTMLImageElement>('[data-lb-img]');
+  const caption = document.querySelector<HTMLElement>('[data-lb-caption]');
+  const count = document.querySelector<HTMLElement>('[data-lb-count]');
+  let current = 0;
+
+  const visibleButtons = () =>
+    items.filter((item) => !item.hidden).map((item) => item.querySelector<HTMLButtonElement>('.gallery__btn')!);
+
+  const show = (index: number) => {
+    const buttons = visibleButtons();
+    if (!buttons.length || !img || !dialog) return;
+    current = (index + buttons.length) % buttons.length;
+    const btn = buttons[current];
+    dialog.classList.toggle('is-small', btn.dataset.small === 'true');
+    img.classList.remove('is-loaded');
+    img.onload = () => img.classList.add('is-loaded');
+    img.src = btn.dataset.full ?? '';
+    img.alt = btn.dataset.alt ?? '';
+    if (caption) caption.textContent = btn.dataset.caption ?? '';
+    if (count) count.textContent = `${current + 1} / ${buttons.length}`;
+  };
+
+  items.forEach((item) => {
+    const btn = item.querySelector<HTMLButtonElement>('.gallery__btn');
+    btn?.addEventListener('click', () => {
+      const index = visibleButtons().indexOf(btn);
+      show(index);
+      dialog?.showModal();
+      document.body.classList.add('is-locked');
+    });
+  });
+
+  dialog?.addEventListener('close', () => document.body.classList.remove('is-locked'));
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog || (event.target as HTMLElement).classList.contains('lightbox__inner')) dialog.close();
+  });
+  document.querySelector('[data-lb-close]')?.addEventListener('click', () => dialog?.close());
+  document.querySelector('[data-lb-prev]')?.addEventListener('click', () => show(current - 1));
+  document.querySelector('[data-lb-next]')?.addEventListener('click', () => show(current + 1));
+
+  dialog?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') show(current - 1);
+    if (event.key === 'ArrowRight') show(current + 1);
+  });
+
+  // Swipe on touch screens
+  let startX = 0;
+  dialog?.addEventListener('pointerdown', (event) => {
+    startX = event.clientX;
+  });
+  dialog?.addEventListener('pointerup', (event) => {
+    const dx = event.clientX - startX;
+    if (Math.abs(dx) > 50 && event.pointerType !== 'mouse') show(current + (dx < 0 ? 1 : -1));
+  });
+</script>
+
+<style>
+  /* ---------- Highlights ---------- */
+  .highlights__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: clamp(24px, 3vw, 44px);
+    align-items: stretch;
+  }
+
+  .feature {
+    position: relative;
+    display: grid;
+    min-height: 620px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    isolation: isolate;
+  }
+
+  .feature__img {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    border-radius: 0;
+  }
+
+  .feature::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(9, 8, 58, 0) 28%, rgba(9, 8, 58, 0.55) 52%, rgba(9, 8, 58, 0.94) 86%);
+  }
+
+  .feature__body {
+    display: grid;
+    gap: 1rem;
+    align-self: end;
+    padding: clamp(28px, 4vw, 52px);
+  }
+
+  .feature__body .t-h2 {
+    font-size: clamp(2rem, 1.3rem + 2.2vw, 3.2rem);
+  }
+
+  .feature__body .t-h2 em {
+    color: #8fd6ff;
+  }
+
+  .feature__body p:last-child {
+    max-width: 36rem;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .feature__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-self: start;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--white);
+  }
+
+  .highlights__list {
+    display: grid;
+    gap: clamp(14px, 1.6vw, 20px);
+  }
+
+  .highlight {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1.4rem;
+    align-items: center;
+    padding: clamp(18px, 2vw, 24px);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
+  }
+
+  .highlight:hover {
+    transform: translateY(-3px);
+    box-shadow: inset 0 0 0 1px var(--line), var(--shadow);
+  }
+
+  .highlight__img {
+    aspect-ratio: 1;
+    border-radius: 22px;
+  }
+
+  .highlight h3 {
+    margin: 0.2rem 0 0.35rem;
+  }
+
+  .highlight__tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sky-ink);
+  }
+
+  @media (max-width: 960px) {
+    .highlights__grid {
+      grid-template-columns: 1fr;
+    }
+    .feature {
+      min-height: 560px;
+    }
+    .feature::after {
+      background: linear-gradient(180deg, rgba(9, 8, 58, 0) 12%, rgba(9, 8, 58, 0.6) 40%, rgba(9, 8, 58, 0.95) 72%);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .highlight {
+      grid-template-columns: 88px 1fr;
+      gap: 1rem;
+    }
+  }
+
+  /* ---------- Gallery ---------- */
+  .gallery__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.6rem 2.4rem;
+    margin-bottom: clamp(36px, 4vw, 56px);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .filter {
+    padding: 0.62rem 1.1rem;
+    border-radius: 999px;
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: 0.88rem;
+    font-weight: 650;
+    color: var(--ink);
+    transition: background-color 0.3s var(--ease), color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+
+  .filter:hover {
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+
+  .filter[aria-pressed='true'] {
+    background: var(--indigo);
+    color: var(--white);
+    box-shadow: none;
+  }
+
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-flow: dense;
+    gap: 12px;
+    transition: opacity 0.22s var(--ease);
+  }
+
+  .gallery__grid.is-filtering {
+    opacity: 0;
+  }
+
+  .gallery__item {
+    aspect-ratio: 1;
+  }
+
+  .gallery__item--large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .gallery__btn {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border-radius: 18px;
+    cursor: zoom-in;
+  }
+
+  .gallery__item--large .gallery__btn {
+    border-radius: var(--radius-lg);
+  }
+
+  .gallery__cap {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 12px;
+    background: rgba(9, 8, 58, 0.66);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--white);
+    font-size: 0.76rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s var(--ease), transform 0.5s var(--ease-out);
+  }
+
+  .gallery__btn:hover .gallery__cap,
+  .gallery__btn:focus-visible .gallery__cap {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 1000px) {
+    .gallery__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gallery__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .gallery__item--large .gallery__cap {
+      opacity: 1;
+      transform: none;
+      font-size: 0.72rem;
+    }
+    .gallery__cap :global(svg) {
+      display: none;
+    }
+  }
+
+  .gallery__more {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem 1.2rem;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--white);
+  }
+
+  .lightbox::backdrop {
+    background: rgba(9, 8, 58, 0.94);
+    backdrop-filter: blur(6px);
+  }
+
+  .lightbox[open] {
+    animation: lb-in 0.4s var(--ease-out);
+  }
+
+  @keyframes lb-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  .lightbox__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px 1fr 64px;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+    padding: 72px clamp(12px, 3vw, 40px) 32px;
+  }
+
+  .lightbox__figure {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .lightbox__figure img {
+    width: auto;
+    max-width: min(100%, 1100px);
+    max-height: calc(100dvh - 190px);
+    border-radius: 20px;
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.4s var(--ease), transform 0.6s var(--ease-out);
+  }
+
+  .lightbox.is-small .lightbox__figure img {
+    width: min(100%, 420px);
+  }
+
+  .lightbox__figure img.is-loaded {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lightbox__figure figcaption {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    text-align: center;
+  }
+
+  .lightbox__count {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .lightbox__close,
+  .lightbox__nav {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+  }
+
+  .lightbox__close:hover,
+  .lightbox__nav:hover {
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  .lightbox__close {
+    position: absolute;
+    top: 16px;
+    right: clamp(12px, 3vw, 40px);
+  }
+
+  @media (max-width: 640px) {
+    .lightbox__inner {
+      grid-template-columns: 1fr;
+      padding-inline: 12px;
+    }
+    .lightbox__nav {
+      position: absolute;
+      bottom: 24px;
+      width: 48px;
+      height: 48px;
+    }
+    .lightbox__nav--prev {
+      left: 24px;
+    }
+    .lightbox__nav--next {
+      right: 24px;
+    }
+  }
+</style>

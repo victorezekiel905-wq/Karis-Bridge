@@ -1,0 +1,18 @@
+---
+/** Concentric arcs — the “bridge” motif used as quiet background ornament. */
+interface Props {
+  class?: string;
+  spans?: number;
+  [key: string]: unknown;
+}
+const { class: className, spans = 4, ...rest } = Astro.props;
+const arcs = Array.from({ length: spans }, (_, i) => 600 - i * 90);
+---
+
+<svg class={className} viewBox="0 0 1200 620" fill="none" aria-hidden="true" focusable="false" {...rest}>
+  {
+    arcs.map((r) => (
+      <path d={`M${600 - r} 610 A${r} ${r} 0 0 1 ${600 + r} 610`} stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke" />
+    ))
+  }
+</svg>

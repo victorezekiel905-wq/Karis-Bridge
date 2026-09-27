@@ -1,0 +1,83 @@
+---
+import { Image } from 'astro:assets';
+import logoLight from '../assets/brand/logo-light.png';
+import Icon from './Icon.astro';
+import Email from './Email.astro';
+import { site, nav, mapsLink, whatsappLink } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer on-dark">
+  <div class="footer__glow" aria-hidden="true"></div>
+  <div class="container">
+    <div class="footer__top">
+      <div class="stack">
+        <p class="eyebrow">Visit Karisbridge</p>
+        <h2 class="t-h2">Come and see the <em>light</em> for yourself<span class="full-stop">.</span></h2>
+      </div>
+      <div class="footer__top-actions">
+        <p>Tours are personal, unhurried and on a day that suits you. Bring your questions — and your little one.</p>
+        <div class="btn-row">
+          <a href="/admissions#enquire" class="btn btn--light">
+            Book a school visit
+            <span class="btn__icon"><Icon name="arrow-up-right" size={18} /></span>
+          </a>
+          <a href={whatsappLink()} class="btn btn--outline-light" target="_blank" rel="noopener">
+            WhatsApp us
+            <span class="btn__icon"><Icon name="whatsapp" size={18} /></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="/" aria-label="Karisbridge Schools — home">
+          <Image src={logoLight} alt="Karisbridge Schools" width={200} densities={[1, 2]} />
+        </a>
+        <p>{site.tagline}. A Creche, Nursery and Primary school shaping global citizens through holistic learning.</p>
+        <div class="footer__social">
+          <a class="icon-btn" href={site.social.instagram} target="_blank" rel="noopener" aria-label="Karisbridge Schools on Instagram"><Icon name="instagram" size={18} /></a>
+          <a class="icon-btn" href={site.social.facebook} target="_blank" rel="noopener" aria-label="Karisbridge Schools on Facebook"><Icon name="facebook" size={18} /></a>
+          <a class="icon-btn" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Chat with Karisbridge Schools on WhatsApp"><Icon name="whatsapp" size={18} /></a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="footer__title">Explore</h3>
+        <ul class="footer__list">
+          {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="footer__title">Visit</h3>
+        <address class="footer__list" style="font-style: normal">
+          <span>{site.address.street}</span>
+          <span>{site.address.road}</span>
+          <span>{site.address.area}, {site.address.city}</span>
+          <a class="text-link" style="color: var(--white); justify-self: start" href={mapsLink} target="_blank" rel="noopener">Get directions</a>
+        </address>
+      </div>
+
+      <div>
+        <h3 class="footer__title">Talk to us</h3>
+        <ul class="footer__list">
+          {site.phones.map((p) => <li><a href={`tel:${p.tel}`}><Icon name="phone" size={15} />{p.display}</a></li>)}
+          <li><a href={`mailto:${site.email}`}><Icon name="mail" size={15} /><span><Email address={site.email} /></span></a></li>
+        </ul>
+        <h3 class="footer__title footer__title--spaced">Careers</h3>
+        <ul class="footer__list">
+          <li><a href={`mailto:${site.careersEmail}`}><Icon name="users" size={15} /><span><Email address={site.careersEmail} /></span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} {site.name}. All rights reserved.</p>
+      <p class="footer__motto"><Icon name="spark" size={13} class="spark" /> {site.motto}</p>
+    </div>
+  </div>
+  <span class="footer__wordmark" aria-hidden="true">Karisbridge</span>
+</footer>

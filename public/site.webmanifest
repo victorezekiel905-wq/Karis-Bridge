@@ -1,0 +1,13 @@
+{
+  "name": "Karisbridge Schools",
+  "short_name": "Karisbridge",
+  "description": "Creche, Nursery & Primary — Ibeju-Lekki, Lagos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf8f3",
+  "theme_color": "#09083a",
+  "icons": [
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
