@@ -3,8 +3,7 @@
   'use strict';
 
   var SCHOOL_WHATSAPP = '2349040118747';
-  var SCHOOL_EMAIL = 'info@karisbridgeschool.com';
-  var SCHOOL_EMAIL_CC = 'admin@karisbridgeschool.com,karisbridgeschool@gmail.com';
+  var SCHOOL_EMAIL = 'karisbridgeschool@gmail.com';
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Header: solid after scrolling, hides on the way down, returns on the way up */
@@ -91,148 +90,14 @@
     }, 2600);
   });
 
+  /* Videos: play only while visible, respect reduced motion, and the hero pause button */
+  var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-auto]'));
+  var userPaused = false;
   function tryPlay(v) {
+    if (userPaused && v.closest('.hero')) return;
     var p = v.play();
     if (p && p.catch) p.catch(function () {});
   }
-
-  /* Hero sequence: each video plays through, then photos slide in, then the next video */
-  var heroEl = document.querySelector('.hero');
-  var track = document.querySelector('[data-hero]');
-  if (heroEl && track) {
-    var slides = Array.prototype.slice.call(track.querySelectorAll('.slide'));
-    var bars = Array.prototype.slice.call(heroEl.querySelectorAll('.hero-progress i'));
-    var caption = heroEl.querySelector('.hero-caption');
-    var toggle = heroEl.querySelector('.video-toggle');
-    var idx = 0;
-    var started = 0;
-    var spent = 0;
-    var userPaused = reduceMotion;
-    var offscreen = false;
-
-    var videoOf = function (slide) {
-      return slide.querySelector('video');
-    };
-    var halted = function () {
-      return userPaused || offscreen;
-    };
-    var photoDuration = function (slide) {
-      return Number(slide.getAttribute('data-duration')) || 4800;
-    };
-    var preloadNextVideo = function (from) {
-      for (var k = 1; k < slides.length; k++) {
-        var v = videoOf(slides[(from + k) % slides.length]);
-        if (v) {
-          if (v.getAttribute('preload') !== 'auto') {
-            v.setAttribute('preload', 'auto');
-            v.load();
-          }
-          return;
-        }
-      }
-    };
-
-    var go = function (next) {
-      var prev = slides[idx];
-      var incoming = slides[next];
-      if (prev !== incoming) {
-        prev.classList.remove('is-active');
-        prev.classList.add('is-leaving');
-        setTimeout(function () {
-          prev.classList.remove('is-leaving');
-          var pv = videoOf(prev);
-          if (pv) pv.pause();
-        }, 1300);
-        caption.classList.add('is-changing');
-        setTimeout(function () {
-          caption.textContent = incoming.getAttribute('data-caption');
-          caption.classList.remove('is-changing');
-        }, 400);
-      }
-      incoming.classList.remove('is-leaving');
-      incoming.classList.add('is-active');
-      idx = next;
-      bars.forEach(function (bar, k) {
-        bar.style.transform = 'scaleX(' + (k < next ? 1 : 0) + ')';
-      });
-      started = performance.now();
-      spent = 0;
-      var v = videoOf(incoming);
-      if (v) {
-        v.currentTime = 0;
-        if (!halted()) tryPlay(v);
-      }
-      preloadNextVideo(next);
-    };
-
-    var tick = function (now) {
-      if (!halted()) {
-        var slide = slides[idx];
-        var v = videoOf(slide);
-        var progress;
-        if (v) {
-          if (v.ended) progress = 1;
-          else if (!v.paused && v.duration) progress = v.currentTime / v.duration;
-          else progress = (spent + now - started) / 11000; /* fallback if the video cannot play */
-        } else {
-          progress = (spent + now - started) / photoDuration(slide);
-        }
-        bars[idx].style.transform = 'scaleX(' + Math.min(1, progress) + ')';
-        if (progress >= 1) go((idx + 1) % slides.length);
-      }
-      requestAnimationFrame(tick);
-    };
-
-    var halt = function () {
-      spent += performance.now() - started;
-      var v = videoOf(slides[idx]);
-      if (v) v.pause();
-      heroEl.classList.add('is-paused');
-    };
-    var resume = function () {
-      started = performance.now();
-      var v = videoOf(slides[idx]);
-      if (v) tryPlay(v);
-      heroEl.classList.remove('is-paused');
-    };
-
-    if (toggle) {
-      if (userPaused) {
-        toggle.setAttribute('aria-pressed', 'true');
-        toggle.querySelector('.toggle-text').textContent = 'Play';
-        heroEl.classList.add('is-paused');
-      }
-      toggle.addEventListener('click', function () {
-        var wasHalted = halted();
-        userPaused = !userPaused;
-        toggle.setAttribute('aria-pressed', String(userPaused));
-        toggle.querySelector('.toggle-text').textContent = userPaused ? 'Play' : 'Pause';
-        if (!wasHalted && halted()) halt();
-        if (wasHalted && !halted()) resume();
-      });
-    }
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(
-        function (entries) {
-          var wasHalted = halted();
-          offscreen = !entries[0].isIntersecting;
-          if (!wasHalted && halted()) halt();
-          if (wasHalted && !halted()) resume();
-        },
-        { threshold: 0.05 }
-      ).observe(heroEl);
-    }
-
-    var first = videoOf(slides[0]);
-    if (first && !userPaused) tryPlay(first);
-    started = performance.now();
-    preloadNextVideo(0);
-    requestAnimationFrame(tick);
-  }
-
-  /* Other videos: play only while visible */
-  var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-auto]'));
   if (!reduceMotion && 'IntersectionObserver' in window) {
     var vo = new IntersectionObserver(
       function (entries) {
@@ -246,6 +111,20 @@
     videos.forEach(function (v) {
       v.muted = true;
       vo.observe(v);
+    });
+  }
+  if (reduceMotion) videos.forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); });
+  var toggle = document.querySelector('.video-toggle');
+  if (toggle) {
+    if (reduceMotion) toggle.setAttribute('aria-pressed', 'true');
+    toggle.addEventListener('click', function () {
+      userPaused = toggle.getAttribute('aria-pressed') !== 'true';
+      toggle.setAttribute('aria-pressed', String(userPaused));
+      toggle.querySelector('.toggle-text').textContent = userPaused ? 'Play video' : 'Pause video';
+      document.querySelectorAll('.hero video').forEach(function (v) {
+        if (userPaused) v.pause();
+        else tryPlay(v);
+      });
     });
   }
 
@@ -352,7 +231,7 @@
 
       if (e.submitter && e.submitter.value === 'email') {
         window.location.href =
-          'mailto:' + SCHOOL_EMAIL + '?cc=' + encodeURIComponent(SCHOOL_EMAIL_CC) + '&subject=' + encodeURIComponent('Enquiry: ' + get('programme')) + '&body=' + encodeURIComponent(text);
+          'mailto:' + SCHOOL_EMAIL + '?subject=' + encodeURIComponent('Enquiry: ' + get('programme')) + '&body=' + encodeURIComponent(text);
         status.textContent = 'Your email app should now be open with the message ready to send.';
       } else {
         window.open('https://wa.me/' + SCHOOL_WHATSAPP + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
