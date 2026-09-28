@@ -1,102 +1,161 @@
-/*
-  Karisbridge Schools
-  Site behaviour: header, mobile menu, scroll fades, enquiry forms, gallery.
-*/
-
+/* Karisbridge Schools — site behaviour */
 (function () {
   'use strict';
 
   var SCHOOL_WHATSAPP = '2349040118747';
   var SCHOOL_EMAIL = 'karisbridgeschool@gmail.com';
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Header shadow once the page scrolls */
-  var header = document.querySelector('.site-header');
-  if (header) {
-    var onScroll = function () {
-      header.classList.toggle('is-scrolled', window.scrollY > 8);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
+  /* Header: solid after scrolling, hides on the way down, returns on the way up */
+  var header = document.querySelector('.header');
+  var lastY = window.scrollY;
+  function onScroll() {
+    var y = window.scrollY;
+    header.classList.toggle('is-solid', y > 40);
+    if (!document.body.classList.contains('is-locked')) {
+      header.classList.toggle('is-hidden', y > 400 && y > lastY + 4);
+      if (y < lastY - 4) header.classList.remove('is-hidden');
+    }
+    lastY = y;
   }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 
   /* Mobile menu */
-  var menuButton = document.querySelector('.menu-button');
-  var mobileNav = document.getElementById('mobile-nav');
-
-  if (menuButton && mobileNav) {
-    var setMenu = function (open) {
-      menuButton.setAttribute('aria-expanded', String(open));
-      menuButton.querySelector('.menu-label').textContent = open ? 'Close' : 'Menu';
-      mobileNav.classList.toggle('is-open', open);
-      document.body.classList.toggle('menu-open', open);
-      if (open) {
-        mobileNav.removeAttribute('inert');
-      } else {
-        mobileNav.setAttribute('inert', '');
-      }
-    };
-
-    menuButton.addEventListener('click', function () {
-      setMenu(menuButton.getAttribute('aria-expanded') !== 'true');
+  var burger = document.querySelector('.burger');
+  var menu = document.getElementById('menu');
+  function setMenu(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.querySelector('.label-text').textContent = open ? 'Close' : 'Menu';
+    menu.classList.toggle('is-open', open);
+    header.classList.toggle('menu-active', open);
+    document.body.classList.toggle('is-locked', open);
+    if (open) menu.removeAttribute('inert');
+    else menu.setAttribute('inert', '');
+  }
+  if (burger && menu) {
+    burger.addEventListener('click', function () {
+      setMenu(burger.getAttribute('aria-expanded') !== 'true');
     });
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && mobileNav.classList.contains('is-open')) {
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('is-open')) {
         setMenu(false);
-        menuButton.focus();
+        burger.focus();
       }
     });
-
     window.addEventListener('resize', function () {
-      if (window.innerWidth > 1040) setMenu(false);
+      if (window.innerWidth > 1080 && menu.classList.contains('is-open')) setMenu(false);
     });
   }
 
-  /* Gentle fade-in as sections come into view */
-  var animated = document.querySelectorAll('[data-animate]');
+  /* Reveal on scroll */
+  var revealEls = document.querySelectorAll('[data-reveal]');
   if ('IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(
+    var io = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
           }
         });
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.12 }
     );
-    animated.forEach(function (el) {
-      observer.observe(el);
+    revealEls.forEach(function (el) {
+      io.observe(el);
     });
   } else {
-    animated.forEach(function (el) {
-      el.classList.add('is-visible');
+    revealEls.forEach(function (el) {
+      el.classList.add('is-in');
     });
   }
 
-  /* Enquiry forms: compose a message and hand it to WhatsApp or email */
-  document.querySelectorAll('.enquiry-form').forEach(function (form) {
+  /* Rotating word in the hero */
+  document.querySelectorAll('.rotator').forEach(function (rotator) {
+    var words = rotator.querySelectorAll('span');
+    var i = 0;
+    words[0].classList.add('is-in');
+    if (reduceMotion || words.length < 2) return;
+    setInterval(function () {
+      var current = words[i];
+      i = (i + 1) % words.length;
+      current.classList.remove('is-in');
+      current.classList.add('is-out');
+      words[i].classList.remove('is-out');
+      words[i].classList.add('is-in');
+      setTimeout(function () {
+        current.classList.remove('is-out');
+      }, 900);
+    }, 2600);
+  });
+
+  /* Videos: play only while visible, respect reduced motion, and the hero pause button */
+  var videos = Array.prototype.slice.call(document.querySelectorAll('video[data-auto]'));
+  var userPaused = false;
+  function tryPlay(v) {
+    if (userPaused && v.closest('.hero')) return;
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var vo = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) tryPlay(entry.target);
+          else entry.target.pause();
+        });
+      },
+      { threshold: 0.2 }
+    );
+    videos.forEach(function (v) {
+      v.muted = true;
+      vo.observe(v);
+    });
+  }
+  if (reduceMotion) videos.forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); });
+  var toggle = document.querySelector('.video-toggle');
+  if (toggle) {
+    if (reduceMotion) toggle.setAttribute('aria-pressed', 'true');
+    toggle.addEventListener('click', function () {
+      userPaused = toggle.getAttribute('aria-pressed') !== 'true';
+      toggle.setAttribute('aria-pressed', String(userPaused));
+      toggle.querySelector('.toggle-text').textContent = userPaused ? 'Play video' : 'Pause video';
+      document.querySelectorAll('.hero video').forEach(function (v) {
+        if (userPaused) v.pause();
+        else tryPlay(v);
+      });
+    });
+  }
+
+  /* Gentle parallax on full-bleed bands */
+  var bands = document.querySelectorAll('.band > img');
+  if (bands.length && !reduceMotion) {
+    var ticking = false;
+    function parallax() {
+      bands.forEach(function (img) {
+        var rect = img.parentElement.getBoundingClientRect();
+        var progress = (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight;
+        img.style.transform = 'translate3d(0,' + (progress * -60).toFixed(1) + 'px,0)';
+      });
+      ticking = false;
+    }
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (!ticking) {
+          requestAnimationFrame(parallax);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+    parallax();
+  }
+
+  /* Enquiry forms: compose a message and open WhatsApp or email */
+  document.querySelectorAll('.enquiry').forEach(function (form) {
     var status = form.querySelector('.form-status');
-
-    var showError = function (field, message) {
-      var wrapper = field.closest('.field');
-      var existing = wrapper.querySelector('.field-error');
-      if (existing) existing.remove();
-      wrapper.classList.toggle('has-error', Boolean(message));
-      field.setAttribute('aria-invalid', message ? 'true' : 'false');
-      if (message) {
-        var note = document.createElement('span');
-        note.className = 'field-error';
-        note.id = field.id + '-error';
-        note.textContent = message;
-        wrapper.appendChild(note);
-        field.setAttribute('aria-describedby', note.id);
-      } else {
-        field.removeAttribute('aria-describedby');
-      }
-    };
-
     var rules = {
       parent: function (v) {
         return v.length < 2 ? 'Please enter your name.' : '';
@@ -111,36 +170,47 @@
         return v ? '' : 'Please choose a class.';
       }
     };
-
-    var validate = function () {
-      var firstInvalid = null;
+    function showError(field, msg) {
+      var wrap = field.closest('.field');
+      var old = wrap.querySelector('.field-error');
+      if (old) old.remove();
+      wrap.classList.toggle('has-error', !!msg);
+      field.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (msg) {
+        var note = document.createElement('span');
+        note.className = 'field-error';
+        note.id = field.id + '-error';
+        note.textContent = msg;
+        wrap.appendChild(note);
+        field.setAttribute('aria-describedby', note.id);
+      } else {
+        field.removeAttribute('aria-describedby');
+      }
+    }
+    function validate() {
+      var first = null;
       Object.keys(rules).forEach(function (name) {
         var field = form.elements[name];
         if (!field) return;
-        var message = rules[name](field.value.trim());
-        showError(field, message);
-        if (message && !firstInvalid) firstInvalid = field;
+        var msg = rules[name](field.value.trim());
+        showError(field, msg);
+        if (msg && !first) first = field;
       });
-      return firstInvalid;
-    };
-
-    form.addEventListener('input', function (event) {
-      if (event.target.closest('.has-error')) validate();
+      return first;
+    }
+    form.addEventListener('input', function (e) {
+      if (e.target.closest('.has-error')) validate();
     });
-
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
       var invalid = validate();
       if (invalid) {
         invalid.focus();
         return;
       }
-
-      var get = function (name) {
-        var field = form.elements[name];
-        return field ? field.value.trim() : '';
-      };
-
+      function get(n) {
+        return form.elements[n] ? form.elements[n].value.trim() : '';
+      }
       var visit = get('visit');
       if (visit) {
         visit = new Date(visit + 'T00:00:00').toLocaleDateString('en-GB', {
@@ -150,110 +220,100 @@
           year: 'numeric'
         });
       }
-
       var lines = ['Parent/guardian: ' + get('parent'), 'Phone: ' + get('phone')];
       if (get('email')) lines.push('Email: ' + get('email'));
       lines.push('Class of interest: ' + get('programme'));
       if (get('child')) lines.push("Child's name: " + get('child'));
       if (get('age')) lines.push("Child's age: " + get('age'));
       if (visit) lines.push('Preferred visit date: ' + visit);
+      var text = 'Hello Karisbridge Schools, I would like to make an enquiry.\n\n' + lines.join('\n');
+      if (get('message')) text += '\n\n' + get('message');
 
-      var message = 'Hello Karisbridge Schools, I would like to make an enquiry.\n\n' + lines.join('\n');
-      if (get('message')) message += '\n\n' + get('message');
-
-      var via = event.submitter && event.submitter.value === 'email' ? 'email' : 'whatsapp';
-
-      if (via === 'email') {
-        var subject = 'Enquiry: ' + get('programme');
+      if (e.submitter && e.submitter.value === 'email') {
         window.location.href =
-          'mailto:' + SCHOOL_EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message);
+          'mailto:' + SCHOOL_EMAIL + '?subject=' + encodeURIComponent('Enquiry: ' + get('programme')) + '&body=' + encodeURIComponent(text);
         status.textContent = 'Your email app should now be open with the message ready to send.';
       } else {
-        window.open('https://wa.me/' + SCHOOL_WHATSAPP + '?text=' + encodeURIComponent(message), '_blank', 'noopener');
-        status.textContent = 'WhatsApp has opened in a new tab with your message ready to send. Thank you.';
+        window.open('https://wa.me/' + SCHOOL_WHATSAPP + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+        status.textContent = 'WhatsApp has opened with your message ready to send. Thank you, we look forward to meeting you.';
       }
       status.classList.add('is-visible');
     });
   });
 
-  /* Gallery: filters and lightbox */
+  /* Gallery filter and lightbox */
   var gallery = document.querySelector('.gallery');
   if (gallery) {
     var items = Array.prototype.slice.call(gallery.querySelectorAll('li'));
-    var filterButtons = document.querySelectorAll('.filters button');
-
-    filterButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        var filter = button.getAttribute('data-filter');
-        filterButtons.forEach(function (b) {
-          b.setAttribute('aria-pressed', String(b === button));
+    var buttons = document.querySelectorAll('.filters button');
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var f = b.getAttribute('data-filter');
+        buttons.forEach(function (x) {
+          x.setAttribute('aria-pressed', String(x === b));
         });
         items.forEach(function (item) {
-          item.hidden = !(filter === 'all' || item.getAttribute('data-category') === filter);
+          item.hidden = !(f === 'all' || item.getAttribute('data-cat') === f);
         });
       });
     });
 
-    var lightbox = document.querySelector('.lightbox');
-    var lbImage = lightbox.querySelector('img');
-    var lbCaption = lightbox.querySelector('.lightbox-caption');
-    var lbCount = lightbox.querySelector('.lightbox-count');
+    var lb = document.querySelector('.lightbox');
+    var lbImg = lb.querySelector('img');
+    var lbCap = lb.querySelector('.lb-cap');
+    var lbCount = lb.querySelector('.lb-count');
     var current = 0;
-
-    var visibleItems = function () {
-      return items.filter(function (item) {
-        return !item.hidden;
+    function visible() {
+      return items.filter(function (i) {
+        return !i.hidden;
       });
-    };
-
-    var show = function (index) {
-      var list = visibleItems();
+    }
+    function show(n) {
+      var list = visible();
       if (!list.length) return;
-      current = (index + list.length) % list.length;
+      current = (n + list.length) % list.length;
       var img = list[current].querySelector('img');
-      var full = list[current].querySelector('button').getAttribute('data-full');
-      lightbox.classList.toggle('is-small', list[current].getAttribute('data-size') === 'small');
-      lbImage.src = full;
-      lbImage.alt = img.alt;
-      lbCaption.textContent = list[current].getAttribute('data-caption');
+      lbImg.src = img.getAttribute('data-full') || img.src;
+      lbImg.alt = img.alt;
+      lbCap.textContent = list[current].getAttribute('data-caption');
       lbCount.textContent = current + 1 + ' of ' + list.length;
-    };
-
+    }
     items.forEach(function (item) {
       item.querySelector('button').addEventListener('click', function () {
-        show(visibleItems().indexOf(item));
-        lightbox.showModal();
+        show(visible().indexOf(item));
+        lb.showModal();
+        document.body.classList.add('is-locked');
       });
     });
-
-    lightbox.querySelector('.lightbox-close').addEventListener('click', function () {
-      lightbox.close();
+    lb.addEventListener('close', function () {
+      document.body.classList.remove('is-locked');
     });
-    lightbox.querySelector('.lightbox-prev').addEventListener('click', function () {
+    lb.querySelector('.lb-close').addEventListener('click', function () {
+      lb.close();
+    });
+    lb.querySelector('.lb-prev').addEventListener('click', function () {
       show(current - 1);
     });
-    lightbox.querySelector('.lightbox-next').addEventListener('click', function () {
+    lb.querySelector('.lb-next').addEventListener('click', function () {
       show(current + 1);
     });
-    lightbox.addEventListener('keydown', function (event) {
-      if (event.key === 'ArrowLeft') show(current - 1);
-      if (event.key === 'ArrowRight') show(current + 1);
+    lb.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
     });
-    lightbox.addEventListener('click', function (event) {
-      if (event.target === lightbox || event.target.classList.contains('lightbox-inner')) lightbox.close();
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb || e.target.classList.contains('lb-inner')) lb.close();
     });
-
-    var touchStart = 0;
-    lightbox.addEventListener('touchstart', function (event) {
-      touchStart = event.touches[0].clientX;
+    var sx = 0;
+    lb.addEventListener('touchstart', function (e) {
+      sx = e.touches[0].clientX;
     }, { passive: true });
-    lightbox.addEventListener('touchend', function (event) {
-      var distance = event.changedTouches[0].clientX - touchStart;
-      if (Math.abs(distance) > 50) show(current + (distance < 0 ? 1 : -1));
+    lb.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
     });
   }
 
-  /* Footer year */
   var year = document.querySelector('[data-year]');
   if (year) year.textContent = new Date().getFullYear();
 })();

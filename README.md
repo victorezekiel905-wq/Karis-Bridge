@@ -10,9 +10,9 @@ It is a plain HTML, CSS and JavaScript site with no build step. `index.html` is 
 | --- | --- |
 | `index.html` | Home |
 | `about.html` | About, values, careers |
-| `learning.html` | Creche, nursery, primary, activities, Summer School |
+| `academics.html` | Creche, nursery, primary, enrichment, Summer School |
 | `admissions.html` | How to join, registration documents, enquiry form, questions |
-| `school-life.html` | Highlights and photo gallery |
+| `school-life.html` | Films, highlights and photo gallery |
 | `contact.html` | Contact details, map, message form |
 | `404.html` | Page not found |
 
@@ -21,7 +21,8 @@ It is a plain HTML, CSS and JavaScript site with no build step. `index.html` is 
 ```
 assets/css/style.css   all styles
 assets/js/main.js      menu, enquiry forms, gallery
-assets/fonts/          Newsreader and Figtree (self-hosted)
+assets/fonts/          Instrument Serif and Instrument Sans (self-hosted)
+assets/video/          short silent loops from the school’s Instagram reels
 assets/images/         photographs and logos (WebP)
 ```
 
