@@ -57,10 +57,10 @@
   --serif: 'Instrument Serif', 'Times New Roman', serif;
   --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
-  --fs-hero: clamp(3.1rem, 1.2rem + 7.2vw, 8.4rem);
-  --fs-h1: clamp(2.8rem, 1.5rem + 5vw, 6.2rem);
-  --fs-h2: clamp(2.3rem, 1.4rem + 3.4vw, 4.6rem);
-  --fs-h3: clamp(1.6rem, 1.3rem + 1.1vw, 2.25rem);
+  --fs-hero: clamp(2.4rem, 1.4rem + 3.6vw, 4.75rem);
+  --fs-h1: clamp(2.2rem, 1.5rem + 2.5vw, 3.75rem);
+  --fs-h2: clamp(1.85rem, 1.4rem + 1.6vw, 2.85rem);
+  --fs-h3: clamp(1.35rem, 1.2rem + 0.5vw, 1.7rem);
   --fs-h4: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
   --fs-lead: clamp(1.125rem, 1.04rem + 0.4vw, 1.375rem);
   --fs-body: clamp(1rem, 0.97rem + 0.14vw, 1.0938rem);
@@ -788,7 +788,7 @@ em {
   gap: 16px;
   padding: 8px 0;
   font-family: var(--serif);
-  font-size: clamp(2.4rem, 9vw, 3.6rem);
+  font-size: clamp(2.1rem, 8vw, 3rem);
   line-height: 1.05;
   color: var(--white);
   opacity: 0;
@@ -974,7 +974,7 @@ em {
 }
 
 .hero h1 {
-  max-width: 13ch;
+  max-width: 14ch;
   font-size: var(--fs-hero);
   line-height: 0.94;
   letter-spacing: -0.03em;
@@ -1544,7 +1544,7 @@ a:hover .frame--zoom img {
 }
 
 .prog h3 {
-  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.75rem);
+  font-size: clamp(1.7rem, 1.45rem + 0.8vw, 2.15rem);
 }
 
 .prog .go {
@@ -1634,7 +1634,7 @@ a:hover .frame--zoom img {
 
 .reel-body h3 {
   color: var(--white);
-  font-size: clamp(1.6rem, 1.3rem + 0.8vw, 2rem);
+  font-size: clamp(1.45rem, 1.25rem + 0.5vw, 1.75rem);
 }
 
 .reel-chip {
@@ -1776,7 +1776,7 @@ a:hover .frame--zoom img {
 }
 
 .pillar h3 {
-  font-size: clamp(1.6rem, 1.35rem + 0.8vw, 2.05rem);
+  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.75rem);
 }
 
 @media (max-width: 980px) {
@@ -1904,7 +1904,7 @@ a:hover .frame--zoom img {
 }
 
 .motto h2 {
-  font-size: clamp(3.2rem, 1.2rem + 8vw, 9.5rem);
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 4.8rem);
   line-height: 0.92;
   letter-spacing: -0.035em;
   max-width: 11ch;
@@ -2210,7 +2210,7 @@ a:hover .frame--zoom img {
 
 .name-card .word {
   font-family: var(--serif);
-  font-size: clamp(3.4rem, 2rem + 4.4vw, 6rem);
+  font-size: clamp(2.9rem, 2rem + 3vw, 4.4rem);
   line-height: 0.9;
   letter-spacing: -0.03em;
   color: var(--navy);
@@ -2273,7 +2273,7 @@ a:hover .frame--zoom img {
 
 .vm-card p.big {
   font-family: var(--serif);
-  font-size: clamp(1.9rem, 1.3rem + 1.8vw, 3rem);
+  font-size: clamp(1.65rem, 1.3rem + 1.1vw, 2.3rem);
   line-height: 1.08;
   letter-spacing: -0.015em;
   color: var(--white);
@@ -2308,7 +2308,7 @@ a:hover .frame--zoom img {
 
 .hhh-card .word {
   font-family: var(--serif);
-  font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+  font-size: clamp(2.2rem, 1.8rem + 1.3vw, 2.8rem);
   line-height: 1;
   font-style: italic;
 }
@@ -2332,7 +2332,7 @@ a:hover .frame--zoom img {
 
 .quote blockquote {
   font-family: var(--serif);
-  font-size: clamp(2.6rem, 1.2rem + 5.4vw, 6.4rem);
+  font-size: clamp(2.2rem, 1.4rem + 2.8vw, 3.9rem);
   line-height: 1;
   letter-spacing: -0.03em;
   color: var(--white);
@@ -2456,7 +2456,7 @@ a:hover .frame--zoom img {
 }
 
 .stage-copy h2 {
-  font-size: clamp(3rem, 2rem + 4vw, 5.8rem);
+  font-size: clamp(2.4rem, 1.8rem + 2vw, 3.6rem);
 }
 
 .stage-copy h2 span {
@@ -2580,7 +2580,7 @@ a:hover .frame--zoom img {
 }
 
 .journey h3 {
-  font-size: 1.75rem;
+  font-size: 1.55rem;
 }
 
 @media (max-width: 1080px) {
@@ -2616,7 +2616,7 @@ a:hover .frame--zoom img {
 }
 
 .info-card h3 {
-  font-size: clamp(1.9rem, 1.5rem + 1.2vw, 2.6rem);
+  font-size: clamp(1.7rem, 1.45rem + 0.8vw, 2.15rem);
 }
 
 .info-card .ticks {
@@ -2730,7 +2730,7 @@ a:hover .frame--zoom img {
 }
 
 .form-card h2 {
-  font-size: clamp(2.2rem, 1.7rem + 1.6vw, 3.2rem);
+  font-size: clamp(1.9rem, 1.6rem + 1vw, 2.5rem);
 }
 
 .form {
@@ -2869,7 +2869,7 @@ a:hover .frame--zoom img {
   cursor: pointer;
   list-style: none;
   font-family: var(--serif);
-  font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.65rem);
+  font-size: clamp(1.25rem, 1.15rem + 0.35vw, 1.45rem);
   line-height: 1.2;
   color: var(--navy);
 }
@@ -3192,7 +3192,7 @@ a:hover .frame--zoom img {
 }
 
 .c-card h2 {
-  font-size: 1.9rem;
+  font-size: 1.6rem;
 }
 
 .c-card a:not(.link) {
@@ -3258,7 +3258,7 @@ a:hover .frame--zoom img {
 
 .footer-cta h2 {
   color: var(--white);
-  font-size: clamp(2.8rem, 1.4rem + 5vw, 6rem);
+  font-size: clamp(2.3rem, 1.5rem + 2.6vw, 3.7rem);
   line-height: 0.96;
   max-width: 12ch;
 }
