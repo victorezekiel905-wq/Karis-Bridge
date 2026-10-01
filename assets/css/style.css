@@ -70,7 +70,7 @@
   /* Space */
   --wrap: 1280px;
   --gutter: clamp(20px, 4vw, 48px);
-  --section: clamp(88px, 10vw, 164px);
+  --section: clamp(64px, 7.2vw, 116px);
   --r-sm: 14px;
   --r: 22px;
   --r-lg: 32px;
@@ -305,7 +305,7 @@ em {
   display: grid;
   gap: 22px;
   max-width: 760px;
-  margin-bottom: clamp(48px, 6vw, 80px);
+  margin-bottom: clamp(32px, 4.2vw, 56px);
 }
 
 .head--center {
@@ -2009,7 +2009,7 @@ a:hover .frame--zoom img {
 
 .page-hero {
   position: relative;
-  padding: calc(var(--header) + clamp(40px, 6vw, 88px)) 0 clamp(64px, 8vw, 120px);
+  padding: calc(var(--header) + clamp(28px, 4vw, 60px)) 0 clamp(48px, 5.6vw, 84px);
   overflow: hidden;
   isolation: isolate;
 }
@@ -3226,7 +3226,7 @@ a:hover .frame--zoom img {
   grid-template-columns: minmax(0, 1.3fr) auto;
   gap: 32px;
   align-items: end;
-  padding-block: clamp(72px, 9vw, 128px) clamp(48px, 6vw, 72px);
+  padding-block: clamp(56px, 6.4vw, 96px) clamp(36px, 4.4vw, 56px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -3245,7 +3245,7 @@ a:hover .frame--zoom img {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
   gap: clamp(32px, 4vw, 64px);
-  padding-block: clamp(48px, 6vw, 80px);
+  padding-block: clamp(40px, 4.6vw, 64px);
 }
 
 .footer-brand img {
@@ -3566,5 +3566,122 @@ a:hover .frame--zoom img {
   .reel {
     flex: 0 0 74%;
     scroll-snap-align: start;
+  }
+}
+
+/* ---------- Review fixes ---------- */
+.field label small {
+  font-size: 0.8125rem;
+}
+
+/* Larger tap targets on touch screens */
+@media (max-width: 760px) {
+  .link {
+    padding-block: 10px 6px;
+  }
+
+  .reel-link {
+    display: inline-block;
+    padding: 10px 0;
+  }
+
+  .c-card a:not(.link) {
+    padding-block: 8px;
+  }
+
+  .logo {
+    padding-block: 2px;
+  }
+}
+
+/* Tablets: keep cards side by side instead of one long column */
+@media (min-width: 701px) and (max-width: 980px) {
+  .programmes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+  }
+
+  .prog .frame {
+    aspect-ratio: 4 / 4.4;
+  }
+
+  .prog-body {
+    padding: 20px 18px 24px;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 860px) {
+  .hhh {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+  }
+}
+
+/* Parent quotes */
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+}
+
+.quote-card {
+  --c: var(--sun);
+  display: grid;
+  gap: 22px;
+  align-content: space-between;
+  margin: 0;
+  padding: clamp(26px, 3vw, 36px);
+  border-radius: var(--r-lg);
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.quote-card blockquote {
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 1.1rem + 0.35vw, 1.4rem);
+  line-height: 1.35;
+  color: var(--navy);
+}
+
+.quote-card blockquote::before {
+  content: '\201C';
+  display: block;
+  height: 0.55em;
+  font-size: 3.4em;
+  line-height: 1;
+  color: var(--c);
+}
+
+.quote-card figcaption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.quote-card figcaption strong {
+  display: block;
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.quote-card .initial {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c);
+  color: var(--navy);
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .quotes {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    margin-inline: auto;
   }
 }
