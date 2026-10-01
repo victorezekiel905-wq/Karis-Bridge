@@ -12,7 +12,8 @@ It is a plain HTML, CSS and JavaScript site with no build step. `index.html` is 
 | `about.html` | About, values, careers |
 | `academics.html` | Creche, nursery, primary, enrichment, Summer School |
 | `admissions.html` | How to join, registration documents, enquiry form, questions |
-| `school-life.html` | Films, highlights and photo gallery |
+| `school-life.html` | Films and highlights |
+| `gallery.html` | Films and photos, sorted by occasion |
 | `contact.html` | Contact details, map, message form |
 | `404.html` | Page not found |
 

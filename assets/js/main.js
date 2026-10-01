@@ -2,8 +2,9 @@
 (function () {
   'use strict';
 
-  var SCHOOL_WHATSAPP = '2349040118747';
-  var SCHOOL_EMAIL = 'karisbridgeschool@gmail.com';
+  var SCHOOL_WHATSAPP = '2349011408747';
+  var SCHOOL_EMAIL = 'info@karisbridgeschool.com';
+  var SCHOOL_EMAIL_CC = 'admin@karisbridgeschool.com,karisbridgeschool@gmail.com';
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Header: solid after scrolling, hides on the way down, returns on the way up */
@@ -98,7 +99,8 @@
     var p = v.play();
     if (p && p.catch) p.catch(function () {});
   }
-  if (!reduceMotion && 'IntersectionObserver' in window) {
+  function startVideos() {
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
     var vo = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
@@ -113,6 +115,8 @@
       vo.observe(v);
     });
   }
+  if (document.readyState === 'complete') startVideos();
+  else window.addEventListener('load', startVideos);
   if (reduceMotion) videos.forEach(function (v) { v.removeAttribute('autoplay'); v.pause(); });
   var toggle = document.querySelector('.video-toggle');
   if (toggle) {
@@ -231,7 +235,7 @@
 
       if (e.submitter && e.submitter.value === 'email') {
         window.location.href =
-          'mailto:' + SCHOOL_EMAIL + '?subject=' + encodeURIComponent('Enquiry: ' + get('programme')) + '&body=' + encodeURIComponent(text);
+          'mailto:' + SCHOOL_EMAIL + '?cc=' + encodeURIComponent(SCHOOL_EMAIL_CC) + '&subject=' + encodeURIComponent('Enquiry: ' + get('programme')) + '&body=' + encodeURIComponent(text);
         status.textContent = 'Your email app should now be open with the message ready to send.';
       } else {
         window.open('https://wa.me/' + SCHOOL_WHATSAPP + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
@@ -243,8 +247,8 @@
 
   /* Gallery filter and lightbox */
   var gallery = document.querySelector('.gallery');
-  if (gallery) {
-    var items = Array.prototype.slice.call(gallery.querySelectorAll('li'));
+  if (gallery && document.querySelector('.lightbox')) {
+    var items = Array.prototype.slice.call(document.querySelectorAll('.gallery li'));
     var buttons = document.querySelectorAll('.filters button');
     buttons.forEach(function (b) {
       b.addEventListener('click', function () {

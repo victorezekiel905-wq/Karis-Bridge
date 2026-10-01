@@ -590,6 +590,8 @@ em {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 60;
+  background: var(--white);
+  box-shadow: 0 1px 0 var(--line);
   transition: transform 0.5s var(--ease), background-color 0.4s, box-shadow 0.4s;
 }
 
@@ -598,10 +600,8 @@ em {
 }
 
 .header.is-solid {
-  background: rgba(255, 249, 241, 0.92);
-  backdrop-filter: blur(16px) saturate(1.4);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  box-shadow: 0 1px 0 var(--line);
+  background: var(--white);
+  box-shadow: 0 1px 0 var(--line), 0 12px 32px -20px rgba(11, 18, 80, 0.28);
 }
 
 .header .wrap {
@@ -637,14 +637,6 @@ em {
   opacity: 0;
 }
 
-.header--over:not(.is-solid) .logo-dark {
-  opacity: 0;
-}
-
-.header--over:not(.is-solid) .logo-light {
-  opacity: 1;
-}
-
 .nav {
   display: flex;
   align-items: center;
@@ -664,10 +656,6 @@ em {
   font-weight: 500;
   color: var(--navy);
   transition: color 0.3s;
-}
-
-.header--over:not(.is-solid) .nav-links a {
-  color: var(--white);
 }
 
 .nav-links a::after {
@@ -895,30 +883,14 @@ em {
   }
 }
 
-.hero-media figcaption {
-  position: absolute;
-  top: calc(var(--header) + 18px);
-  left: 18px;
-  z-index: 2;
-  padding: 7px 14px;
-  border-radius: 999px;
-  background: rgba(7, 12, 56, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--white);
-}
-
 .hero-media::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(180deg, rgba(7, 12, 56, 0.55) 0%, rgba(7, 12, 56, 0) 26%),
-    linear-gradient(0deg, rgba(7, 12, 56, 0.92) 0%, rgba(7, 12, 56, 0.55) 38%, rgba(7, 12, 56, 0.1) 70%),
-    linear-gradient(90deg, rgba(7, 12, 56, 0.55) 0%, rgba(7, 12, 56, 0) 60%);
+    radial-gradient(115% 95% at 0% 100%, rgba(7, 12, 56, 0.9) 0%, rgba(7, 12, 56, 0.62) 34%, rgba(7, 12, 56, 0.18) 58%, rgba(7, 12, 56, 0) 74%),
+    linear-gradient(0deg, rgba(7, 12, 56, 0.5) 0%, rgba(7, 12, 56, 0) 28%);
 }
 
 .hero-content {
@@ -979,6 +951,7 @@ em {
   line-height: 0.94;
   letter-spacing: -0.03em;
   color: var(--white);
+  text-shadow: 0 2px 30px rgba(7, 12, 56, 0.35);
 }
 
 .hero h1 .line {
@@ -992,7 +965,7 @@ em {
   display: inline-block;
   transform: translateY(105%);
   animation: rise 1.2s var(--ease) forwards;
-  animation-delay: calc(0.25s + var(--i, 0) * 0.14s);
+  animation-delay: calc(0.1s + var(--i, 0) * 0.12s);
 }
 
 @keyframes rise {
@@ -1031,14 +1004,15 @@ em {
   margin: 28px 0 36px;
   font-size: var(--fs-lead);
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.86);
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 16px rgba(7, 12, 56, 0.45);
   opacity: 0;
-  animation: fade-up 1s var(--ease) 0.9s forwards;
+  animation: fade-up 0.9s var(--ease) 0.45s forwards;
 }
 
 .hero .btn-row {
   opacity: 0;
-  animation: fade-up 1s var(--ease) 1.05s forwards;
+  animation: fade-up 0.9s var(--ease) 0.6s forwards;
 }
 
 @keyframes fade-up {
@@ -1057,7 +1031,7 @@ em {
   justify-items: end;
   gap: 20px;
   opacity: 0;
-  animation: fade-up 1s var(--ease) 1.3s forwards;
+  animation: fade-up 0.9s var(--ease) 0.8s forwards;
 }
 
 .video-toggle {
@@ -3376,8 +3350,8 @@ a:hover .frame--zoom img {
 .js [data-reveal] {
   opacity: 0;
   transform: translateY(40px);
-  transition: opacity 1s var(--ease), transform 1.2s var(--ease);
-  transition-delay: calc(var(--d, 0) * 0.09s);
+  transition: opacity 0.8s var(--ease), transform 0.9s var(--ease);
+  transition-delay: calc(var(--d, 0) * 0.07s);
 }
 
 .js [data-reveal='left'] {
@@ -3470,5 +3444,127 @@ a:hover .frame--zoom img {
 
   .gallery .cap {
     display: none;
+  }
+}
+
+/* Hero on phones: full-width shade so the headline always reads */
+@media (max-width: 900px) {
+  .hero-media::after {
+    background: linear-gradient(0deg, rgba(7, 12, 56, 0.94) 0%, rgba(7, 12, 56, 0.78) 42%, rgba(7, 12, 56, 0.3) 72%, rgba(7, 12, 56, 0.05) 100%);
+  }
+}
+
+/* Long email addresses wrap inside contact cards */
+.c-card a,
+.c-card p {
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 1081px) {
+  .contact-cards {
+    grid-template-columns: 1fr 1fr 1.45fr 1fr;
+  }
+}
+
+/* Reel card link to the original post */
+.reel-link {
+  justify-self: start;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--sun);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.reel-link:hover {
+  color: var(--white);
+}
+
+/* Centred call to action under a section */
+.center-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(32px, 4vw, 48px);
+}
+
+/* Gallery page sections */
+.date-chip {
+  display: inline-flex;
+  justify-self: start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--c, var(--sun));
+  color: var(--navy);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gallery-section .gallery {
+  columns: 4 240px;
+}
+
+/* School Life preview of the gallery */
+.preview-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.preview-strip .frame {
+  display: block;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r);
+}
+
+.preview-strip li:nth-child(even) {
+  transform: translateY(18px);
+}
+
+@media (max-width: 760px) {
+  .preview-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .preview-strip li:nth-child(even) {
+    transform: none;
+  }
+}
+
+.gallery-section .gallery--few {
+  columns: 3 240px;
+}
+
+@media (max-width: 600px) {
+  .gallery-section .gallery,
+  .gallery-section .gallery--few {
+    columns: 2;
+    column-gap: 10px;
+  }
+}
+
+/* Film cards become a swipeable row on phones */
+@media (max-width: 480px) {
+  .reels {
+    display: flex;
+    gap: 12px;
+    max-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 4px var(--gutter) 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+
+  .reels::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reel {
+    flex: 0 0 74%;
+    scroll-snap-align: start;
   }
 }
